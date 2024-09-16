@@ -1,7 +1,4 @@
-
 {% load static %}
-
-
 
 
 <!DOCTYPE html>
@@ -13,49 +10,48 @@
     <title>Welcome to My Site</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <link rel="stylesheet" href="{% static 'index.css' %}">
 
     <style>
-        /* General Body Styles */
         body {
             font-family: 'Arial', sans-serif;
-            background: #f5f5f5; /* Light background color */
+            background: #f5f5f5; 
         }
 
-        /* Navbar Styles */
         .navbar {
-            background-color: #343a40; /* Dark background for the navbar */
+            background-color: #343a40; 
         }
 
         .navbar-brand {
-            font-size: 1.5rem; /* Larger brand text */
-            color: #ffffff; /* White text color */
+            font-size: 1.5rem;
+            color: #ffffff; 
         }
 
         .navbar-brand:hover {
-            color: #ffcc00; /* Accent color on hover */
+            color: #ffcc00; 
         }
 
         .navbar-nav .nav-item .nav-link {
-            color: #ffffff; /* White color for nav links */
-            font-size: 1rem; /* Consistent font size for nav links */
+            color: #ffffff;
+            font-size: 1rem; 
         }
 
         .navbar-nav .nav-item .nav-link:hover {
-            color: #ffcc00; /* Accent color on hover */
+            color: #ffcc00;
         }
 
         .navbar-text {
-            font-size: 1rem; /* Size of the logged-in username text */
-            color: #ffffff; /* White text color */
+            font-size: 1rem;
+            color: #ffffff; 
         }
 
         .navbar-nav .nav-item .nav-link i {
-            font-size: 1.2rem; /* Size of the logout icon */
+            font-size: 1.2rem; 
         }
 
         .navbar-text {
-            margin: 0 20px; /* Add space between the username and logout icon */
+            margin: 0 20px; 
         }
     </style>
 </head>
@@ -85,78 +81,3 @@
             </ul>
         </div>
     </nav>
-
-    <!-- Page Content -->
-    <div class="container">
-        <!-- Your content here -->
-    </div>
-
-    <!-- Bootstrap JavaScript and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
-
-    <script>
-        // Check if user is logged in on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const token = localStorage.getItem('jwt_token');
-            if (token) {
-                fetch('/api/user/', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.username) {
-                        document.getElementById('username').textContent = data.username;
-                        document.getElementById('username-display').style.display = 'inline';
-                        document.getElementById('logout-link').style.display = 'inline';
-                    } else {
-                        console.error('User data fetch failed:', data);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching user data:', error);
-                });
-            }
-        });
-        
-        // Handle logout
-        document.getElementById('logout-btn').addEventListener('click', function(event) {
-            event.preventDefault();
-        
-            const refreshToken = localStorage.getItem('refresh_token');
-            const accessToken = localStorage.getItem('jwt_token');
-        
-            if (refreshToken) {
-                fetch('/api/logout/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`  // Use access token in header
-                    },
-                    body: JSON.stringify({ refresh: refreshToken })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        localStorage.removeItem('jwt_token');
-                        localStorage.removeItem('refresh_token');
-                        window.location.href = '/';  // Redirect to the root path
-                    } else {
-                        return response.json().then(data => {
-                            console.error('Error during logout:', data.detail);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error during logout:', error);
-                });
-            } else {
-                console.error('No refresh token found.');
-            }
-        });
-        
-    </script>
