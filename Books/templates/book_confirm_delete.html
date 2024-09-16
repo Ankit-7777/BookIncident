@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block books %}
+<style>
+    #delete-confirmation-container {
+        padding: 30px;
+        background-color: #ffffff;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        transition: box-shadow 0.3s, transform 0.3s;
+        margin-top: 20px;
+        text-align: center;
+    }
+    #delete-confirmation-container:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        transform: scale(1.02);
+    }
+    h2 {
+        color: #333;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+    .btn-custom {
+        border-radius: 25px;
+        padding: 12px 25px;
+        font-size: 1rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+        border: none;
+    }
+    .btn-danger {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: #fff;
+    }
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #c82333, #b21f2d);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d, #5a6268);
+        color: #fff;
+    }
+    .btn-secondary:hover {
+        background: linear-gradient(135deg, #5a6268, #4e555b);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+</style>
+
+<div class="container mt-4" id="delete-confirmation-container">
+    <h2>Are you sure you want to delete "{{ book.title }}"?</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger btn-custom">Yes, Delete</button>
+        <a href="{% url 'book-list' %}" class="btn btn-secondary btn-custom">Cancel</a>
+    </form>
+</div>
+{% endblock %}

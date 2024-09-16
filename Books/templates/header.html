@@ -1,0 +1,162 @@
+
+{% load static %}
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to My Site</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'index.css' %}">
+
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f5f5; /* Light background color */
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: #343a40; /* Dark background for the navbar */
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem; /* Larger brand text */
+            color: #ffffff; /* White text color */
+        }
+
+        .navbar-brand:hover {
+            color: #ffcc00; /* Accent color on hover */
+        }
+
+        .navbar-nav .nav-item .nav-link {
+            color: #ffffff; /* White color for nav links */
+            font-size: 1rem; /* Consistent font size for nav links */
+        }
+
+        .navbar-nav .nav-item .nav-link:hover {
+            color: #ffcc00; /* Accent color on hover */
+        }
+
+        .navbar-text {
+            font-size: 1rem; /* Size of the logged-in username text */
+            color: #ffffff; /* White text color */
+        }
+
+        .navbar-nav .nav-item .nav-link i {
+            font-size: 1.2rem; /* Size of the logout icon */
+        }
+
+        .navbar-text {
+            margin: 0 20px; /* Add space between the username and logout icon */
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <a class="navbar-brand" href="{% url 'index' %}">My Book Store</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+               
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'book-list' %}">Books</a>
+                </li>
+            </ul>
+            <span class="navbar-text mx-auto" id="username-display" style="display: none;">
+                Welcome, <span id="username"></span>
+            </span>
+            <ul class="navbar-nav ml-auto" id="auth-links">
+                <li class="nav-item" id="logout-link" style="display: none;">
+                    <a class="nav-link" href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+        <!-- Your content here -->
+    </div>
+
+    <!-- Bootstrap JavaScript and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+
+    <script>
+        // Check if user is logged in on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('jwt_token');
+            if (token) {
+                fetch('/api/user/', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.username) {
+                        document.getElementById('username').textContent = data.username;
+                        document.getElementById('username-display').style.display = 'inline';
+                        document.getElementById('logout-link').style.display = 'inline';
+                    } else {
+                        console.error('User data fetch failed:', data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user data:', error);
+                });
+            }
+        });
+        
+        // Handle logout
+        document.getElementById('logout-btn').addEventListener('click', function(event) {
+            event.preventDefault();
+        
+            const refreshToken = localStorage.getItem('refresh_token');
+            const accessToken = localStorage.getItem('jwt_token');
+        
+            if (refreshToken) {
+                fetch('/api/logout/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`  // Use access token in header
+                    },
+                    body: JSON.stringify({ refresh: refreshToken })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        localStorage.removeItem('jwt_token');
+                        localStorage.removeItem('refresh_token');
+                        window.location.href = '/';  // Redirect to the root path
+                    } else {
+                        return response.json().then(data => {
+                            console.error('Error during logout:', data.detail);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during logout:', error);
+                });
+            } else {
+                console.error('No refresh token found.');
+            }
+        });
+        
+    </script>

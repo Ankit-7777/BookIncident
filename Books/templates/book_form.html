@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block books %}
+<style>
+    /* Default Theme (Blue) */
+    body {
+        background: linear-gradient(135deg, #009688, #4DB6AC);
+        font-family: Arial, sans-serif;
+        color: #00796B;
+        transition: background 0.5s ease-in-out;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        padding-top: 50px; 
+    }
+    .form-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 40px;
+        background-color: #FFFFFF;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        border: 1px solid #00796B;
+        transition: box-shadow 0.3s ease-in-out;
+    }
+    .form-container h2 {
+        margin-bottom: 30px;
+        color: #00796B;
+        font-weight: 600;
+        text-align: center;
+    }
+    .form-group label {
+        font-weight: 500;
+        color: #00796B;
+    }
+    .form-group input, .form-group textarea {
+        border-radius: 8px;
+        border: 1px solid #00796B;
+        padding: 10px;
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+        border-color: #004D40;
+        box-shadow: 0 0 0 0.2rem rgba(0, 77, 64, 0.25);
+    }
+    .form-group textarea {
+        resize: vertical;
+        height: 120px;
+    }
+    .btn-custom {
+        border-radius: 25px;
+        padding: 12px 25px;
+        font-size: 1rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+        border: none;
+    }
+    .btn-save {
+        background-color: #00796B; /* Dark Teal */
+        color: #fff; /* White Text */
+    }
+    
+    .btn-save:hover {
+        background-color: #004D40; /* Darker Teal */
+        color: #FFEB3B; /* Bright Yellow Text for better contrast */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+    }
+    
+    .btn-cancel {
+        background: #FF6F61; 
+        color: #fff;
+    }
+    .btn-cancel:hover {
+        background-color: #e55d50; 
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group input, .form-group textarea {
+        width: 100%;
+    }
+
+
+.theme-create {
+    background: linear-gradient(135deg, #FF5722, #FFC107);
+    color: #BF360C;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+    margin: 0;
+}
+
+.theme-create .form-container {
+    border: 1px solid #BF360C;
+    width: 100%;
+    max-width: 800px;
+    background-color: #fff;
+    margin: 40px auto;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+
+    
+    .theme-create .form-container h2 {
+        color: #BF360C;
+    }
+    .theme-create .form-group label {
+        color: #BF360C;
+    }
+    .theme-create .form-group input, .theme-create .form-group textarea {
+        border: 1px solid #BF360C;
+    }
+    .theme-create .form-group input:focus, .theme-create .form-group textarea:focus {
+        border-color: #E64A19;
+        box-shadow: 0 0 0 0.2rem rgba(194, 48, 77, 0.25);
+    }
+    .theme-update .btn-save {
+        background-color: #009688; /* Teal */
+        color: #FFFFFF; /* White */
+    }
+    
+    .theme-update .btn-save:hover {
+        background-color: #004D40; /* Darker Teal */
+        color: #FFC107; /* Amber for contrast */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+    }
+    
+    .theme-update .btn-cancel {
+        background-color: #FF5722; /* Coral */
+        color: #FFFFFF; /* White */
+    }
+    
+    .theme-update .btn-cancel:hover {
+        background-color: #BF360C; /* Darker Coral */
+        color: #FFFFFF; /* White for contrast */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+    }
+    
+    
+    
+</style>
+
+<div class="{% if form.instance.pk %}theme-purple{% else %}theme-create{% endif %}">
+    <div class="form-container">
+        <h2>{% if form.instance.pk %}Update Book{% else %}Add New Book{% endif %}</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.title.label_tag }}
+                {{ form.title }}
+                {{ form.title.errors }}
+            </div>
+            <div class="form-group">
+                {{ form.author.label_tag }}
+                {{ form.author }}
+                {{ form.author.errors }}
+            </div>
+            <div class="form-group">
+                {{ form.description.label_tag }}
+                {{ form.description }}
+                {{ form.description.errors }}
+            </div>
+            <div class="form-group">
+                {{ form.published_date.label_tag }}
+                {{ form.published_date }}
+                {{ form.published_date.errors }}
+            </div>
+            <div class="form-group">
+                {{ form.price.label_tag }}
+                {{ form.price }}
+                {{ form.price.errors }}
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-custom btn-save">Save</button>
+                <a href="{% url 'book-list' %}" class="btn btn-custom btn-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
