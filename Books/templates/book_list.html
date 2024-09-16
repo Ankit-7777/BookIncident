@@ -4,26 +4,35 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #FFB74D, #FF6F61); /* Beautiful gradient background */
+            background: linear-gradient(135deg, #FFB74D, #FF6F61);
             color: #333;
+            margin: 0;
+            padding: 0;
         }
         .container {
-            max-width: 1400px; /* Increased max-width for the container */
-            margin: 0 auto; /* Center the container */
+            max-width: 1400px;
+            margin: 0 auto;
             padding: 20px;
         }
         .table-container {
-            width: 100%; /* Full width of the container */
-            margin: 40px 0; /* Space above and below the table container */
+            width: 100%; 
+            margin: 60px 0; /* Increased margin-top to ensure it doesn't hide under the header */
             padding: 20px;
             background-color: #ffffff;
             border-radius: 12px;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-            overflow-x: auto; /* Make the table scrollable on smaller screens */
+            overflow-x: auto; 
+            animation: slideUp 1s ease-out; /* Add slide-up animation */
+            transform: translateY(50px); /* Start position for slide-up effect */
+            opacity: 0; /* Start with hidden */
+        }
+        .table-container.show {
+            transform: translateY(0); /* End position */
+            opacity: 1; /* Visible */
         }
         h2 {
             margin-bottom: 30px;
-            color: #FF6F61; /* Accent color for heading */
+            color: #FF6F61; 
             font-weight: 700;
             text-align: center;
         }
@@ -32,7 +41,7 @@
             border-collapse: collapse;
         }
         .table thead th {
-            background-color: #FF6F61; /* Header background color */
+            background-color: #FF6F61; 
             color: #ffffff;
             text-align: center;
             padding: 12px;
@@ -41,28 +50,28 @@
             text-align: center;
             vertical-align: middle;
             padding: 12px;
-            border-bottom: 1px solid #e0e0e0; /* Light border */
+            border-bottom: 1px solid #e0e0e0; 
         }
         .table tbody tr:nth-child(even) {
-            background-color: #f9f9f9; /* Alternate row color */
+            background-color: #f9f9f9; 
         }
         .table tbody tr:hover {
-            background-color: #f1f1f1; /* Row hover color */
+            background-color: #f1f1f1; 
         }
         .table .actions-column {
-            width: 200px; /* Increased width for Actions column */
+            width: 200px; 
         }
         .btn-custom {
-            border-radius: 5px; /* Square button corners */
+            border-radius: 5px;
             padding: 10px;
-            font-size: 1.2rem; /* Larger icon size */
+            font-size: 1.2rem; 
             transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
             border: none;
             color: #ffffff;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            text-decoration: none; /* Remove underline from links */
+            text-decoration: none; 
         }
         .btn-primary {
             background-color: #FF6F61;
@@ -84,20 +93,20 @@
         }
         .btn-custom i {
             margin-right: 5px;
-            font-size: 1.2rem; /* Larger icon size */
+            font-size: 1.2rem; 
         }
         .btn-add {
-            background-color: #4CAF50; /* Green for Add button */
+            background-color: #4CAF50; 
             color: #ffffff;
-            margin-bottom: 20px; /* Space between button and table */
+            margin-bottom: 20px; 
         }
         .btn-add:hover {
-            background-color: #388E3C; /* Darker Green on hover */
+            background-color: #388E3C; 
         }
         .index-column {
-            width: 60px; /* Width for index column */
+            width: 60px; 
             text-align: center;
-            background-color: #FF6F61; /* Accent color for index column */
+            background-color: #FF6F61; 
             color: #ffffff;
         }
         @media (max-width: 768px) {
@@ -110,14 +119,24 @@
                 padding: 8px;
             }
             .btn-custom {
-                font-size: 1rem; /* Adjusted size for smaller screens */
+                font-size: 1rem; 
                 padding: 8px;
+            }
+        }
+        @keyframes slideUp {
+            from { 
+                transform: translateY(50px); 
+                opacity: 0; 
+            }
+            to { 
+                transform: translateY(0); 
+                opacity: 1; 
             }
         }
     </style>
 
     <div class="container">
-        <div class="table-container">
+        <div class="table-container show">
             <h2>All Books</h2>
             {% if user.is_authenticated %}
                 {% if not user.is_superuser %}
@@ -128,7 +147,7 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th class="index-column">#</th> <!-- Index Column Header -->
+                        <th class="index-column">#</th> 
                         <th>Title</th>
                         <th>Author</th>
                         <th>Published Date</th>
@@ -139,7 +158,7 @@
                 <tbody>
                     {% for book in books %}
                     <tr>
-                        <td>{{ forloop.counter }}</td> <!-- Display the index -->
+                        <td>{{ forloop.counter }}</td> 
                         <td>{{ book.title }}</td>
                         <td>{{ book.author }}</td>
                         <td>{{ book.published_date }}</td>
