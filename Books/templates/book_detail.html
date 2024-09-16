@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block books %}
+<style>
+    body {
+        background: linear-gradient(135deg, #009688, #4DB6AC); /* Teal gradient background */
+        color: #333;
+        font-family: 'Arial', sans-serif;
+    }
+    #book-detail-container {
+        padding: 40px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-top: 30px;
+    }
+    #book-detail-container:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        transform: scale(1.03);
+    }
+    h2 {
+        font-size: 2rem;
+        color: #00796B; /* Dark Teal for headings */
+        margin-bottom: 30px;
+        font-weight: 700;
+        text-align: center;
+    }
+    .book-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-gap: 25px;
+        margin-bottom: 30px;
+    }
+    .book-item {
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #f2f2f2; /* Light gray background for items */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .book-item:hover {
+        background-color: #e0f2f1; /* Light Teal on hover */
+        transform: translateY(-5px);
+    }
+    strong {
+        font-weight: 600;
+        color: #00796B; /* Dark Teal for labels */
+    }
+    .book-detail-span {
+        font-size: 1.1rem;
+        color: #333;
+        margin-left: 10px;
+    }
+    .btn-custom {
+        border-radius: 25px;
+        padding: 12px 30px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    .btn-secondary {
+        background: #FF6F61; /* Accent Coral for button */
+        color: #fff;
+    }
+    .btn-secondary:hover {
+        background: #e55d50; /* Darker Coral on hover */
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+    @media (max-width: 768px) {
+        #book-detail-container {
+            padding: 20px;
+        }
+        h2 {
+            font-size: 1.6rem;
+        }
+    }
+</style>
+
+<div class="container mt-4" id="book-detail-container">
+    <h2>Book Details</h2>
+    <div class="book-info">
+        <div class="book-item">
+            <strong>Title:</strong>
+            <span class="book-detail-span">{{ book.title }}</span>
+        </div>
+        <div class="book-item">
+            <strong>Author:</strong>
+            <span class="book-detail-span">{{ book.author }}</span>
+        </div>
+        <div class="book-item">
+            <strong>Description:</strong>
+            <span class="book-detail-span">{{ book.description }}</span>
+        </div>
+        <div class="book-item">
+            <strong>Published Date:</strong>
+            <span class="book-detail-span">{{ book.published_date }}</span>
+        </div>
+        <div class="book-item">
+            <strong>Price:</strong>
+            <span class="book-detail-span">{{ book.price }}</span>
+        </div>
+        <div class="book-item">
+            <strong>Created At:</strong>
+            <span class="book-detail-span">{{ book.created_at }}</span>
+        </div>
+        <div class="book-item">
+            <strong>Updated At:</strong>
+            <span class="book-detail-span">{{ book.updated_at }}</span>
+        </div>
+    </div>
+    <div class="text-center mt-4">
+        <a href="{% url 'book-list' %}" class="btn btn-secondary btn-custom">Back to List</a>
+    </div>
+</div>
+{% endblock %}

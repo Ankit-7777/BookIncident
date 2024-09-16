@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #009688, #4DB6AC); /* Cool teal gradient background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+        .form-container {
+            background: #FFFFFF; /* White background for the form */
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            padding: 40px; /* Increased padding */
+            max-width: 100%;
+            width: 100%;
+            max-width: 500px; /* Increased max-width */
+            animation: slideUp 1s ease-out;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .form-container:hover {
+            transform: scale(1.03); /* Slightly larger scale on hover */
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+        .form-container h2 {
+            margin-bottom: 30px; /* Increased margin */
+            color: #00796B; /* Dark teal for text */
+            font-size: 2rem; /* Increased font size */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        .form-group label {
+            font-weight: bold;
+            color: #00796B; /* Dark teal for labels */
+            font-size: 1.1rem; /* Larger label font size */
+        }
+        .form-control {
+            border-radius: 8px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #4DB6AC; /* Light teal border */
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-size: 1.1rem; /* Larger input text */
+            padding: 15px; /* Increased padding */
+        }
+        .form-control:focus {
+            border-color: #00796B; /* Focus color */
+            box-shadow: 0 0 8px rgba(0, 121, 107, 0.3);
+            outline: none;
+        }
+        .btn-primary {
+            background: #00796B; /* Button background */
+            border: none;
+            border-radius: 8px;
+            padding: 15px; /* Increased padding */
+            font-size: 1.2rem; /* Larger font size */
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .btn-primary:hover {
+            background: #004D40; /* Button hover background */
+            transform: scale(1.05);
+        }
+        .btn-primary:focus {
+            outline: none;
+        }
+        .error-message {
+            color: #D32F2F; /* Error message color */
+            font-size: 1rem; /* Larger error message font size */
+            margin-top: 15px; /* Increased margin-top */
+        }
+        .login-link {
+            display: block;
+            margin-bottom: 30px; /* Increased margin-bottom */
+            text-align: center;
+            font-size: 1rem; /* Larger font size */
+            color: #00796B; /* Dark teal for link */
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .login-link:hover {
+            color: #004D40; /* Link hover color */
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="form-container">
+                    <a href="/login/" class="login-link">Already have an account? Login here</a>
+                    <h2 class="text-center">Register</h2>
+                    <form id="register-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="username">Username:</label>
+                            <input type="text" name="username" id="username" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" name="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" name="password" id="password" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm Password:</label>
+                            <input type="password" name="confirm_password" id="confirm_password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Register</button>
+                        <p id="error-message" class="error-message"></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch('{% url "api_register" %}', {
+                method: 'POST',
+                body: JSON.stringify({
+                    username: formData.get('username'),
+                    email: formData.get('email'),
+                    password: formData.get('password'),
+                    confirm_password: formData.get('confirm_password')
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.token) {
+                    localStorage.setItem('jwt_token', data.token.access);
+                    window.location.href = '/index/';
+                } else {
+                    document.getElementById('error-message').textContent = data.detail || 'Registration failed.';
+                }
+            })
+            .catch(error => {
+                console.error('Error during registration:', error);
+                document.getElementById('error-message').textContent = 'Error during registration.';
+            });
+        });
+    </script>
+</body>
+</html>

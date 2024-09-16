@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block books %}
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #FFB74D, #FF6F61); /* Beautiful gradient background */
+            color: #333;
+        }
+        .container {
+            max-width: 1400px; /* Increased max-width for the container */
+            margin: 0 auto; /* Center the container */
+            padding: 20px;
+        }
+        .table-container {
+            width: 100%; /* Full width of the container */
+            margin: 40px 0; /* Space above and below the table container */
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            overflow-x: auto; /* Make the table scrollable on smaller screens */
+        }
+        h2 {
+            margin-bottom: 30px;
+            color: #FF6F61; /* Accent color for heading */
+            font-weight: 700;
+            text-align: center;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table thead th {
+            background-color: #FF6F61; /* Header background color */
+            color: #ffffff;
+            text-align: center;
+            padding: 12px;
+        }
+        .table tbody td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0; /* Light border */
+        }
+        .table tbody tr:nth-child(even) {
+            background-color: #f9f9f9; /* Alternate row color */
+        }
+        .table tbody tr:hover {
+            background-color: #f1f1f1; /* Row hover color */
+        }
+        .table .actions-column {
+            width: 200px; /* Increased width for Actions column */
+        }
+        .btn-custom {
+            border-radius: 5px; /* Square button corners */
+            padding: 10px;
+            font-size: 1.2rem; /* Larger icon size */
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+            border: none;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none; /* Remove underline from links */
+        }
+        .btn-primary {
+            background-color: #FF6F61;
+        }
+        .btn-primary:hover {
+            background-color: #E64A45;
+        }
+        .btn-warning {
+            background-color: #FFB74D;
+        }
+        .btn-warning:hover {
+            background-color: #FFA000;
+        }
+        .btn-danger {
+            background-color: #E57373;
+        }
+        .btn-danger:hover {
+            background-color: #D32F2F;
+        }
+        .btn-custom i {
+            margin-right: 5px;
+            font-size: 1.2rem; /* Larger icon size */
+        }
+        .btn-add {
+            background-color: #4CAF50; /* Green for Add button */
+            color: #ffffff;
+            margin-bottom: 20px; /* Space between button and table */
+        }
+        .btn-add:hover {
+            background-color: #388E3C; /* Darker Green on hover */
+        }
+        .index-column {
+            width: 60px; /* Width for index column */
+            text-align: center;
+            background-color: #FF6F61; /* Accent color for index column */
+            color: #ffffff;
+        }
+        @media (max-width: 768px) {
+            .table thead th {
+                font-size: 0.8rem;
+                padding: 8px;
+            }
+            .table tbody td {
+                font-size: 0.8rem;
+                padding: 8px;
+            }
+            .btn-custom {
+                font-size: 1rem; /* Adjusted size for smaller screens */
+                padding: 8px;
+            }
+        }
+    </style>
+
+    <div class="container">
+        <div class="table-container">
+            <h2>All Books</h2>
+            {% if user.is_authenticated %}
+                {% if not user.is_superuser %}
+                    <a href="{% url 'book-create' %}" class="btn btn-custom btn-add"><i class="fas fa-plus-square"></i>Add Book</a>
+                {% endif %}
+            {% endif %}
+            
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="index-column">#</th> <!-- Index Column Header -->
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Published Date</th>
+                        <th>Price</th>
+                        <th class="actions-column">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td> <!-- Display the index -->
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.published_date }}</td>
+                        <td>{{ book.price }}</td>
+                        <td class="actions-column">
+                            <a href="{% url 'book-detail' book.id %}" class="btn btn-custom btn-primary"><i class="fas fa-book-open"></i></a>
+                            {% if user.is_authenticated %}
+                                {% if user.is_superuser or book.user == user %}
+                                    <a href="{% url 'book-update' book.id %}" class="btn btn-custom btn-warning m-1"><i class="fas fa-edit"></i></a>
+                                    <a href="{% url 'book-delete' book.id %}" class="btn btn-custom btn-danger"><i class="fas fa-trash"></i></a>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}
