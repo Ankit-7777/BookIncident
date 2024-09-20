@@ -138,11 +138,9 @@
     <div class="container">
         <div class="table-container show">
             <h2>All Books</h2>
-            {% if user.is_authenticated %}
-                {% if not user.is_superuser %}
+            
                     <a href="{% url 'book-create' %}" class="btn btn-custom btn-add"><i class="fas fa-plus-square"></i>Add Book</a>
-                {% endif %}
-            {% endif %}
+           
             
             <table class="table table-bordered">
                 <thead>
